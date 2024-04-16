@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SeparationMapper">
+    
+    <resultMap type="Separation" id="SeparationResult">
+        <result property="id"    column="id"   />
+        <result property="avatarUrl"    column="avatar_url"   />
+        <result property="bsId"    column="bs_id"   />
+        <result property="userId"    column="s_user_id"   />
+        <result property="type"    column="type"   />
+        <result property="isArea"    column="isArea"   />
+        <result property="separationName"    column="separation_name"    />
+        <result property="bsName"    column="bs_name"    />
+        <result property="bsFloweId"    column="bs_floweId"    />
+        <result property="describe"    column="describe"    />
+        <result property="url"    column="url"    />
+        <result property="isOpen"    column="isOpen"    />
+        <result property="delFlag"    column="del_flag"    />
+        <collection property="sysUser" ofType="SysUser" resultMap="SysUserResultMap"/>
+    </resultMap>
+
+    <resultMap type="SysUser" id="SysUserResultMap">
+        <id     property="userId"       column="user_id"      />
+        <result property="deptId"       column="dept_id"      />
+        <result property="userName"     column="user_name"    />
+        <result property="nickName"     column="nick_name"    />
+        <result property="email"        column="email"        />
+        <result property="phonenumber"  column="phonenumber"  />
+        <result property="sex"          column="sex"          />
+        <result property="avatar"       column="avatar"       />
+        <result property="password"     column="password"     />
+        <result property="status"       column="status"       />
+        <result property="delFlag"      column="del_flag"     />
+        <result property="loginIp"      column="login_ip"     />
+        <result property="loginDate"    column="login_date"   />
+        <result property="createBy"     column="create_by"    />
+        <result property="createTime"   column="create_time"  />
+        <result property="updateBy"     column="update_by"    />
+        <result property="updateTime"   column="susUser_update_time"  />
+        <result property="remark"       column="remark"       />
+    </resultMap>
+
+    <resultMap type="File" id="FileResult">
+        <result property="id"    column="id"    />
+        <result property="separationId"    column="separation_id"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="bsName"    column="bs_name"    />
+        <result property="fileUrl"    column="file_url"    />
+        <result property="bsId"    column="bs_id"    />
+        <result property="vectorStatus"    column="vector_status"    />
+        <result property="createTime"    column="create_timestamp"    />
+    </resultMap>
+
+    <insert id="insertSeparation" parameterType="Separation" useGeneratedKeys="true" keyProperty="id">
+        insert into my_grapharea
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="avatarUrl != null  and avatarUrl != ''" >avatar_url,</if>
+            <if test="bsId != null  and bsId != ''">bs_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="type != null  and type != ''">`type`,</if>
+            <if test="isArea != null  and isArea != ''">is_area,</if>
+            <if test="separationName != null  and separationName != ''">separation_name,</if>
+            <if test="bsName != null  and bsName != ''">bs_name,</if>
+            <if test="bsFloweId != null  and bsFloweId != ''">bs_floweId,</if>
+            <if test="describe != null  and describe != ''">`describe`,</if>
+            <if test="url != null  and url != ''">url,</if>
+            <if test="isOpen != null  and isOpen != ''">isOpen,</if>
+            <if test="delFlag != null  and delFlag != ''">del_flag,</if>
+            <if test="createTime != null'">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="avatarUrl != null  and avatarUrl != ''" >#{avatarUrl},</if>
+            <if test="bsId != null  and bsId != ''">#{bsId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="type != null  and type != ''">#{type},</if>
+            <if test="isArea != null  and isArea != ''">#{isArea},</if>
+            <if test="separationName != null  and separationName != ''">#{separationName},</if>
+            <if test="bsName != null  and bsName != ''">#{bsName},</if>
+            <if test="bsFloweId != null  and bsFloweId != ''">#{bsFloweId},</if>
+            <if test="describe != null  and describe != ''">#{describe},</if>
+            <if test="url != null  and url != ''">#{url},</if>
+            <if test="isOpen != null  and isOpen != ''">#{isOpen},</if>
+            <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
+            <if test="createTime != null'">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchInsertAreaFiles" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="files.id">
+        INSERT INTO m_file (separation_id, file_name, bs_name, file_url, bs_id, vector_status, create_time)
+        VALUES
+        <foreach collection="files" item="file" separator=",">
+            (#{separationId}, #{file.fileName}, #{file.bsName}, #{file.fileUrl}, #{file.bsId}, #{file.vectorStatus}, #{file.createTime})
+        </foreach>
+    </insert>
+
+    <update id="updateSeparation" parameterType="Separation">
+        update m_separation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isArea != null  and isArea != ''">isArea = #{isArea},</if>
+            <if test="separationName != null  and separationName != ''">separation_name = #{separationName},</if>
+            <if test="describe != null  and describe != ''">`describe` = #{describe},</if>
+            <if test="isOpen != null  and isOpen != ''">#{isOpen}</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateSeparationAvatar">
+ 		update m_separation set avatar_url = #{avatar} where id = #{separationId}
+	</update>
+
+    <update id="deleteSeparationById" parameterType="Long">
+        update m_separation set del_flag = 'Y' where id = #{separationId}
+    </update>
+
+    <update id="updateFileVectorStatusByBsId" parameterType="File">
+        update m_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vectorStatus != null">vector_status = #{vectorStatus},</if>
+        </trim>
+        where bs_id = #{bsId}
+    </update>
+
+    <select id="selectSeparationList" resultMap="SeparationResult">
+        select s.id, s.avatar_url, s.bs_id, s.user_id AS s_user_id, s.type, s.isArea, s.separation_name, s.bs_name, s.bs_floweId, s.describe, s.isOpen, s.url, s.del_flag, s.del_flag, s.create_time,
+        u.user_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.avatar
+        from m_separation s
+        left JOIN sys_user u on u.user_id = s.user_id
+        <where>
+            s.del_flag='0'
+            <if test="separation.id != null"> and s.id=#{separation.id}</if>
+            <if test="separation.type != null and separation.type != ''"> and s.type = #{separation.type}</if>
+            <if test="separation.separationName != null  and separation.separationName != ''"> and s.separation_name like concat('%', #{separation.separationName}, '%')</if>
+        </where>
+        ORDER BY s.create_time DESC;
+    </select>
+
+    <select id="selectSeparationById" resultMap="SeparationResult">
+        select s.id, s.avatar_url, s.bs_id, s.user_id AS s_user_id, s.type, s.isArea, s.separation_name, s.bs_name, s.bs_floweId, s.describe, s.isOpen, s.url, s.del_flag, s.del_flag, s.create_time,
+        u.user_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.avatar
+        from m_separation s
+        left JOIN sys_user u on u.user_id = s.user_id
+        <where>
+            s.del_flag='N' and s.id=#{separationId}
+        </where>
+    </select>
+
+    <select id="selectSeparationByUserId" resultType="com.ruoyi.system.domain.entiy.Separation">
+        select s.id, s.avatar_url, s.bs_id, s.user_id AS s_user_id, s.type, s.isArea, s.separation_name, s.bs_name, s.bs_floweId, s.describe, s.isOpen, s.url, s.del_flag, s.del_flag, s.create_time,
+        u.user_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.avatar
+        from m_separation s
+        left JOIN sys_user u on u.user_id = s.user_id
+        <where>
+            s.del_flag='N' and s.user_id=#{userId}
+        </where>
+    </select>
+
+    <select id="selectFileById" resultMap="FileResult">
+        select f.id,f.separation_id, f.file_name,f.bs_name,f.file_url,f.bs_id, f.vector_status, f.create_time
+        from m_file f
+        where f.id = #{id};
+    </select>
+    <select id="selectFiles" resultType="com.ruoyi.system.domain.entiy.File">
+        select f.id,f.separation_id, f.file_name,f.bs_name,f.file_url,f.bs_id, f.vector_status, f.create_time
+        from m_file f
+        <where>
+            <if test="separationId != null"> and f.separation_id = #{separationId}</if>
+            <if test="fileName != null  and fileName != ''"> and f.file_name like concat('%', #{fileName}, '%')</if>
+            <if test="vectorStatus != null  and vectorStatus != ''"> and f.vector_status = #{vectorStatus}</if>
+            <if test="bsId != null"> and f.bs_id = #{bsId}</if>
+        </where>
+    </select>
+
+    <delete id="deleteFileById">
+        delete from m_file  where id=#{id}
+    </delete>
+
+</mapper>

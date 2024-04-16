@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.StatusMapper">
+    
+    <resultMap type="Status" id="StatusResult">
+        <result property="id"    column="status_id"   />
+        <result property="userId"    column="user_id"   />
+        <result property="type"    column="status_type"   />
+        <collection property="separationList" ofType="Separation" resultMap="SeparationResult"/>
+
+    </resultMap>
+
+    <resultMap type="Separation" id="SeparationResult">
+        <result property="id"    column="id"   />
+        <result property="avatarUrl"    column="avatar_url"   />
+        <result property="bsId"    column="bs_id"   />
+        <result property="userId"    column="s_user_id"   />
+        <result property="type"    column="type"   />
+        <result property="isArea"    column="isArea"   />
+        <result property="separationName"    column="separation_name"    />
+        <result property="bsName"    column="bs_name"    />
+        <result property="bsFloweId"    column="bs_floweId"    />
+        <result property="describe"    column="describe"    />
+        <result property="url"    column="url"    />
+        <result property="isOpen"    column="isOpen"    />
+        <result property="isActivate"    column="isActivate"    />
+        <result property="delFlag"    column="del_flag"    />
+    </resultMap>
+    <update id="updateTypeActivate">
+        update m_status set `type`=#{i}
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateSeparationActivate">
+        update m_status_separation set isActivate=#{isActivate}
+        where status_id = #{statusId} and separation_id = #{separationId}
+    </update>
+
+    <update id="updateChatboxActivate">
+        update m_chatbox set isActivate=#{isActivate}
+        where id = #{chatboxId}
+    </update>
+
+    <delete id="deleteSeparation">
+        delete from m_status_separation where status_id=#{statusId} and separation_id = #{separationId}
+    </delete>
+
+
+    <select id="getCurrnetStatus" parameterType="Long" resultType="com.ruoyi.system.domain.entiy.Status">
+        select sta.id AS status_id, sta.user_id,sta.type AS status_type,
+        s.id, s.avatar_url, s.bs_id, s.user_id AS s_user_id, s.type, s.isArea, s.isActivate, s.separation_name, s.bs_name, s.bs_floweId, s.describe, s.isOpen, s.url, s.del_flag, s.del_flag, s.create_time,
+        ss.isActivate
+        from m_status sta
+        left JOIN m_status_separation ss on ss.status_id = sta.id
+        left JOIN m_separation s on ss.separation_id = s.id
+        <where>
+             sta.user_id=#{userId}
+        </where>
+    </select>
+
+
+    <insert id="binding">
+        insert into m_status_separation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            status_id, separation_id, isActivate
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{statusId}, #{separationId}, #{isActivate}
+        </trim>
+    </insert>
+
+</mapper>

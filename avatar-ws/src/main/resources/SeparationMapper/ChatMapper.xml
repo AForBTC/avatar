@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ChatMapper">
+    
+    <resultMap type="Chatbox" id="ChatboxResult">
+        <result property="id"    column="id"   />
+        <result property="userId"    column="user_id"   />
+        <result property="type"    column="type"   />
+        <result property="separationId"    column="separation_id"   />
+        <result property="chatboxName"    column="chatbox_name"   />
+        <result property="sessionId"    column="session_id"   />
+        <result property="isActivate"    column="isActivate"   />
+        <result property="createTime"    column="create_time"   />
+    </resultMap>
+
+    <resultMap type="Chathistory" id="ChathistoryResult">
+        <result property="id"    column="id"    />
+        <result property="question"    column="question"    />
+        <result property="answer"    column="answer"    />
+        <result property="chatboxId"    column="chatbox_id"    />
+        <result property="effect"    column="effect"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <delete id="deleteChatboxById">
+        delete from m_chatbox chatbox
+        JOIN m_history history ON history.chatbox_id = chatbox.id
+        where id=#{id}
+    </delete>
+
+    <select id="selectChatboxs" resultType="com.ruoyi.system.domain.entiy.Chatbox">
+        select a.id, a.app_name, a.description, a.principal_id, a.secretkey, a.create_timestamp, a.update_timestamp,a.status,
+        from m_chatbox
+        <where>
+            <if test="chatbox.userId != null"> and user_id=#{chatbox.userId}</if>
+            <if test="chatbox.type != null chatbox.type != ''"> and `type` = #{chatbox.type}</if>
+            <if test="chatbox.separationId != null"> and separation_id = #{chatbox.separationId}</if>
+        </where>
+        ORDER BY create_time DESC;
+    </select>
+
+    <select id="getHistoryByChatboxId" resultType="com.ruoyi.system.domain.entiy.Chathistory">
+        select id, question, answer, chatbox_id, effect, create_time,
+        from m_chathistory
+        where chatbox_id=#{chatboxId}
+    </select>
+</mapper>
