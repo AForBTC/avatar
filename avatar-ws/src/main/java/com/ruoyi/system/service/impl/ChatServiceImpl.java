@@ -11,9 +11,11 @@ import com.ruoyi.system.service.IChatService;
 import com.ruoyi.system.service.ISeparationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class ChatServiceImpl implements IChatService {
 
     @Autowired
