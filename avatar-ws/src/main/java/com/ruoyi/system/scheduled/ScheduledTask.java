@@ -53,24 +53,24 @@ public class ScheduledTask {
 
     @PostConstruct
     public void executeAtStartup() {
-        loginbishegn();
+//        loginbishegn();
         createUserSeparation();
-        List<Separation> separations = separationMapper.selectSeparationList(new Separation());
-        for (Separation separation : separations) {
-            queueWithConsumer.synBSToMysql(Long.parseLong(separation.getBsId()));
-        }
-        Thread consumerThread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Long areaBsId = queueWithConsumer.consume();
-                queueWithConsumer.synBSToMysql(areaBsId);
-            }
-        });
-        consumerThread.start();
+//        List<Separation> separations = separationMapper.selectSeparationList(new Separation());
+//        for (Separation separation : separations) {
+//            queueWithConsumer.synBSToMysql(Long.parseLong(separation.getBsId()));
+//        }
+//        Thread consumerThread = new Thread(() -> {
+//            while (true) {
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                Long areaBsId = queueWithConsumer.consume();
+//                queueWithConsumer.synBSToMysql(areaBsId);
+//            }
+//        });
+//        consumerThread.start();
     }
 
     @Scheduled(fixedRate = 600000) // 300000毫秒 = 5分钟
@@ -118,7 +118,7 @@ public class ScheduledTask {
             List<Separation> separations = separationMapper.selectSeparationList(separation);
             if(sysUser.getUserId() != 1){
                 if(separations == null || separations.size() == 0){
-                    separationService.addSeparation(new Separation());
+                    separationService.addSeparation(separation);
                 }
             }
         }

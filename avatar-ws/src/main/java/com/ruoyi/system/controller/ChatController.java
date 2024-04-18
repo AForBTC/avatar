@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,19 +23,24 @@ public class ChatController extends BaseController {
     private IChatService chatService;
 
     @PostMapping("/chat")
-    public AjaxResult chat(@RequestBody Chathistory chathistory){
-        return toAjax(chatService.chat(chathistory));
+    public AjaxResult chat(@RequestBody Chathistory chathistory) throws IOException {
+        return success(chatService.chat(chathistory));
     }
 
     @GetMapping("/getHistoryByChatboxId")
-    public AjaxResult getHistoryByChatboxId(@RequestBody(required = true) Map map){
-        Long chatboxId = (Long) map.get("chatboxId");
-        return success(chatService.getHistoryByChatboxId(chatboxId));
+    public AjaxResult getHistoryByChatboxId(){
+//        Long chatboxId = (Long) map.get("chatboxId");
+        return success(chatService.getHistoryByChatboxId(1l));
     }
 
     @GetMapping("/getChatboxs")
-    public AjaxResult getChatboxs(@RequestBody Chatbox chatbox){
-        return success(chatService.getChatBoxs(chatbox));
+    public AjaxResult getChatboxs(){
+        ArrayList<Chatbox> chatboxes = new ArrayList<>();
+        Chatbox chatbox1 = new Chatbox();
+        chatbox1.setChatboxName("会话一");
+        chatbox1.setIsActivate("Y");
+        chatboxes.add(chatbox1);
+        return success(chatboxes);
     }
 
     @PostMapping("/delChatboxs")

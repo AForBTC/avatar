@@ -8,6 +8,7 @@ import com.ruoyi.system.mapper.StatusMapper;
 import com.ruoyi.system.service.IStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,15 +20,23 @@ public class StatusServiceImpl implements IStatusService {
     private StatusMapper statusMapper;
 
 
+    @Transactional
     @Override
     public Status getCurrnetStatus() {
-        Status status = statusMapper.getCurrnetStatus(SecurityUtils.getUserId());
+        Status currnetStatus = statusMapper.getCurrnetStatus(110l);
+        if(currnetStatus == null){
+            Status status = new Status();
+            status.setUserId(110l);
+            status.setType(0);
+            statusMapper.insertStatus(status);
+        }
+        Status status = statusMapper.getCurrnetStatus(110l);
         return status;
     }
 
     @Override
     public int binding(Status status) {
-        Status currnetStatus = statusMapper.getCurrnetStatus(SecurityUtils.getUserId());
+        Status currnetStatus = statusMapper.getCurrnetStatus(110l);
         List<Separation> separations = currnetStatus.getSeparationList();
         // 使用流查找 id 为 1 的对象
         Optional<Separation> separation = separations.stream()
@@ -38,19 +47,19 @@ public class StatusServiceImpl implements IStatusService {
             Separation obj = separation.get();
             statusMapper.updateSeparationActivate(currnetStatus.getId(), obj.getId(), "N");
         }
-        Optional<Separation> separationC = separations.stream()
-                .filter(obj -> obj.getId().equals(status.getSeparationId()))
-                .findFirst();
-        if (!separation.isPresent()) {
-            statusMapper.updateTypeActivate(currnetStatus.getId(), 2);
-            statusMapper.binding(currnetStatus.getId(), status.getSeparationId(), "Y");
-            return 1;
-        }
         if(status.getType() == 0){
             statusMapper.updateTypeActivate(currnetStatus.getId(), 0);
         } else if(status.getType() == 1){
             statusMapper.updateTypeActivate(currnetStatus.getId(), 1);
         } else {
+            Optional<Separation> separationC = separations.stream()
+                    .filter(obj -> obj.getId().equals(status.getSeparationId()))
+                    .findFirst();
+            if (!separationC.isPresent()) {
+                statusMapper.updateTypeActivate(currnetStatus.getId(), 2);
+                statusMapper.binding(currnetStatus.getId(), status.getSeparationId(), "Y");
+                return 1;
+            }
             statusMapper.updateTypeActivate(currnetStatus.getId(), 2);
             statusMapper.updateSeparationActivate(currnetStatus.getId(), status.getSeparationId(), "Y");
         }

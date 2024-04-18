@@ -19,7 +19,7 @@ server:
   port: 8080
   servlet:
     # 应用的访问路径
-    context-path: /
+    context-path: /api
   tomcat:
     # tomcat的URI编码
     uri-encoding: UTF-8
@@ -30,7 +30,9 @@ server:
       max: 800
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
-
+ignore:
+  whites:
+    - /api/
 # 日志配置
 logging:
   level:

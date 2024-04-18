@@ -5,12 +5,13 @@ import com.ruoyi.system.domain.entiy.Chathistory;
 import com.ruoyi.system.domain.entiy.Separation;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 
 public interface IChatService {
 
-    int chat(Chathistory chathistory);
+    Chathistory chat(Chathistory chathistory) throws IOException;
 
     List<Chatbox> getChatBoxs(Chatbox chatbox);
 

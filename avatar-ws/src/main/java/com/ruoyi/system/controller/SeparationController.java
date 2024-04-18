@@ -24,10 +24,11 @@ public class SeparationController extends BaseController {
 
 
     @RequestMapping("getSeparationList")
-    public TableDataInfo getSeparationInfo(@RequestParam Separation separation){
-        startPage();
+    public AjaxResult getSeparationInfo(Separation separation){
+//        startPage();
         List<Separation> list = separationService.selectSeparationList(separation);
-        return getDataTable(list);
+
+        return success(list);
     }
 
     @PostMapping("updateSparationupdateAvatar")

@@ -53,15 +53,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"    column="create_timestamp"    />
     </resultMap>
 
-    <insert id="insertSeparation" parameterType="Separation" useGeneratedKeys="true" keyProperty="id">
-        insert into my_grapharea
+    <insert id="insertSeparation" parameterType="Separation">
+        insert into m_separation
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>
             <if test="avatarUrl != null  and avatarUrl != ''" >avatar_url,</if>
             <if test="bsId != null  and bsId != ''">bs_id,</if>
             <if test="userId != null">user_id,</if>
             <if test="type != null  and type != ''">`type`,</if>
-            <if test="isArea != null  and isArea != ''">is_area,</if>
+            <if test="isArea != null  and isArea != ''">isArea,</if>
             <if test="separationName != null  and separationName != ''">separation_name,</if>
             <if test="bsName != null  and bsName != ''">bs_name,</if>
             <if test="bsFloweId != null  and bsFloweId != ''">bs_floweId,</if>
@@ -69,7 +69,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="url != null  and url != ''">url,</if>
             <if test="isOpen != null  and isOpen != ''">isOpen,</if>
             <if test="delFlag != null  and delFlag != ''">del_flag,</if>
-            <if test="createTime != null'">create_time,</if>
+            <if test="createTime != null">create_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
@@ -85,7 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="url != null  and url != ''">#{url},</if>
             <if test="isOpen != null  and isOpen != ''">#{isOpen},</if>
             <if test="delFlag != null  and delFlag != ''">#{delFlag},</if>
-            <if test="createTime != null'">#{createTime},</if>
+            <if test="createTime != null">#{createTime},</if>
         </trim>
     </insert>
 
@@ -130,7 +130,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from m_separation s
         left JOIN sys_user u on u.user_id = s.user_id
         <where>
-            s.del_flag='0'
+            s.del_flag='N'
+            <if test="separation.userId != null"> and s.user_id=#{separation.userId}</if>
             <if test="separation.id != null"> and s.id=#{separation.id}</if>
             <if test="separation.type != null and separation.type != ''"> and s.type = #{separation.type}</if>
             <if test="separation.separationName != null  and separation.separationName != ''"> and s.separation_name like concat('%', #{separation.separationName}, '%')</if>

@@ -9,7 +9,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="userId"    column="user_id"   />
         <result property="type"    column="status_type"   />
         <collection property="separationList" ofType="Separation" resultMap="SeparationResult"/>
-
     </resultMap>
 
     <resultMap type="Separation" id="SeparationResult">
@@ -25,12 +24,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="describe"    column="describe"    />
         <result property="url"    column="url"    />
         <result property="isOpen"    column="isOpen"    />
-        <result property="isActivate"    column="isActivate"    />
+        <result property="isActivate"    column="ss_isActivate"    />
         <result property="delFlag"    column="del_flag"    />
     </resultMap>
+
     <update id="updateTypeActivate">
         update m_status set `type`=#{i}
-        where user_id = #{userId}
+        where id = #{statusId}
     </update>
 
     <update id="updateSeparationActivate">
@@ -48,10 +48,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
 
-    <select id="getCurrnetStatus" parameterType="Long" resultType="com.ruoyi.system.domain.entiy.Status">
-        select sta.id AS status_id, sta.user_id,sta.type AS status_type,
-        s.id, s.avatar_url, s.bs_id, s.user_id AS s_user_id, s.type, s.isArea, s.isActivate, s.separation_name, s.bs_name, s.bs_floweId, s.describe, s.isOpen, s.url, s.del_flag, s.del_flag, s.create_time,
-        ss.isActivate
+    <select id="getCurrnetStatus" parameterType="Long" resultMap="StatusResult">
+        select DISTINCT sta.id AS status_id, sta.user_id, sta.type AS status_type,
+        s.id, s.avatar_url, s.bs_id, s.user_id AS s_user_id, s.type, s.isArea, s.separation_name, s.bs_name, s.bs_floweId, s.describe, s.isOpen, s.url, s.create_time,
+        ss.isActivate as ss_isActivate
         from m_status sta
         left JOIN m_status_separation ss on ss.status_id = sta.id
         left JOIN m_separation s on ss.separation_id = s.id
@@ -68,6 +68,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             #{statusId}, #{separationId}, #{isActivate}
+        </trim>
+    </insert>
+
+    <insert id="insertStatus" parameterType="Status">
+        insert into m_status
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            user_id, `type`
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{userId}, #{type}
         </trim>
     </insert>
 

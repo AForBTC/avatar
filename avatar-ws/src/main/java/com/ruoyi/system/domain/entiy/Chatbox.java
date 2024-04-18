@@ -14,6 +14,7 @@ public class Chatbox {
     private Long separationId;
     private String chatboxName;
     private String isActivate;
+    private String describle;
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 }

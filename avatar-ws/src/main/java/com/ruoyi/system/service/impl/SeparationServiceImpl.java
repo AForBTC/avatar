@@ -47,11 +47,7 @@ public class SeparationServiceImpl implements ISeparationService {
     @Override
     public List<Separation> selectSeparationList(Separation separation) {
         List<Separation> separations = separationMapper.selectSeparationList(separation);
-        Long userId = SecurityUtils.getUserId();
-        List<Separation> filteredList = separations.stream()
-                .filter(obj -> obj.getId() != userId)
-                .collect(Collectors.toList());
-        return filteredList;
+        return separations;
     }
 
     @Override
@@ -60,9 +56,15 @@ public class SeparationServiceImpl implements ISeparationService {
         return separation;
     }
 
+    @Transactional
     @Override
     public int addSeparation(Separation separation) {
-        Long userId = SecurityUtils.getUserId();
+        Long userId = null;
+        if(separation.getUserId() == null){
+            userId = SecurityUtils.getUserId();
+        } else {
+            userId = separation.getUserId();
+        }
         separation.setUserId(userId);
         separation.setCreateTime(new Date());
         separation.setDelFlag("N");
@@ -83,10 +85,10 @@ public class SeparationServiceImpl implements ISeparationService {
         body.put("description", separation.getDescribe());
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        JSONObject dataJsonObject = (JSONObject) biShengUtils.sendRequest(bishengBaseURL + createAreaURL, "POST", body, headers);
-        separation.setBsId(dataJsonObject.getLong("id") + "");
-        //TODO 毕昇开启技能
-        openGrapharea(separation);
+//        JSONObject dataJsonObject = (JSONObject) biShengUtils.sendRequest(bishengBaseURL + createAreaURL, "POST", body, headers);
+//        separation.setBsId(dataJsonObject.getLong("id") + "");
+//        毕昇开启技能
+//        openGrapharea(separation);
         int rows = separationMapper.insertSeparation(separation);
         return rows;
     }
